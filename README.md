@@ -90,11 +90,14 @@ with:
 - $$\( \mathcal{N}[\cdot] \)$$ — differential operator (e.g., $$\( u_t + a u_x - \nu u_{xx} \))$$
 - $$\( \lambda \)$$ — PDE coefficients/parameters
 - Boundary and initial conditions:
+
+
 $$
 \[
 u(x,0) = u_0(x), \quad u|_{\partial \Omega} = g(x,t)
 \]
 $$
+
 ---
 
 ### 2. PINN Approach
@@ -161,4 +164,5 @@ $$\[
 
 - Raissi, M., Perdikaris, P., & Karniadakis, G. E. (2019). *Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations*. Journal of Computational Physics, 378, 686–707.
 - Karniadakis, G. E., et al. (2021). *Physics-informed machine learning*. Nature Reviews Physics, 3, 422–440.
+
 
