@@ -1,65 +1,91 @@
 # PINNs-Lib
 
-**PINNs-Lib** is a Python library for solving partial differential equations (PDEs) using **Physics-Informed Neural Networks (PINNs)**.  
-It allows users to define PDEs with coefficients, boundary and initial conditions, and automatically trains a neural network to approximate the solution.
+A small, easy-to-use Python library for solving PDEs with Physics-Informed Neural Networks (PINNs).
+
+This project provides a lightweight toolkit to define PDE problems, build PINN models, train them, and visualize results.
+
+Key components
+- `PDEproblem.PDEProblem` — describe the PDE (order, coefficients, domain, IC/BC)
+- `PINNModel.PINNModel` — flexible fully-connected network (optional Fourier features)
+- `trainer.Trainer` — simple training loop with point sampling and Adam optimizer
+- `visualizer.Visualizer` — quick plotting helpers (loss, 1D line, 2D field)
+- `utils` — helpers: seeding, save/load, error metrics
 
 ---
 
-## Features
+## Quick features
 
-- Define PDEs via `PDEProblem` with order and coefficients
-- Flexible neural network architectures with `PINNModel`
-- Automatic computation of PDE residual + IC/BC losses
-- Trainer class with point sampling and optimizer support
-- Visualization tools for solutions and loss curves
-- Utilities for reproducibility, model save/load, and error metrics
-- Example scripts for common PDEs (Heat, Burgers)
+- Define PDEs with coefficients, IC and BCs
+- Compute PDE residual + IC/BC MSE automatically
+- Minimal trainer that returns loss history
+- Simple, dependency-light visualization with matplotlib
+- Small examples: `examples/heat.py`, `examples/burgers.py`
 
 ---
 
-## Installation
+## Install
 
-Clone the repository:
+Recommended: create a virtual environment and install dependencies from `requirements.txt`.
 
-```bash
-git clone https://github.com/your-username/pinns-lib.git
-cd pinns-lib
+Windows (PowerShell):
+
+```powershell
+python -m venv .venv; .\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
 ```
-## Install dependencies:
+
+Or simply:
+
 ```bash
 pip install -r requirements.txt
 ```
 
+---
 
-## Usage :
+## Minimal example (Heat equation)
+
+This example matches the small API used in the repository. Run it from the repository root.
 
 ```python
-
 import torch
-from pinns import PDEProblem, PINNModel, Trainer
-from pinns.visualizer import Visualizer
-from pinns.utils import set_seed
+from PDEproblem import PDEProblem
+from PINNModel import PINNModel
+from trainer import Trainer
+from visualizer import Visualizer
+from utils import set_seed
 
 set_seed(123)
 
-# Define PDE
 pde = PDEProblem(
     order=2,
-    coefficients={"alpha": 0.01},
-    domain={"x": (0,1), "t": (0,1)},
+    coefficients={"nu": 0.01},
+    domain={"x": (0.0, 1.0), "t": (0.0, 1.0)},
     initial_condition=lambda x: torch.sin(torch.pi * x),
-    boundary_conditions=[("dirichlet", "x=0", 0), ("dirichlet","x=1",0)]
+    boundary_conditions=[("dirichlet", 0.0, lambda x: torch.zeros_like(x)), ("dirichlet", 1.0, lambda x: torch.zeros_like(x))]
 )
 
-# Create PINN model
-model = PINNModel(input_dim=2, output_dim=1, layers=[64,64,64], activation="tanh")
+model = PINNModel(input_dim=2, output_dim=1, layers=[64, 64, 64], activation="tanh")
 
-# Train model
-trainer = Trainer(model, pde, optimizer="adam", lr=1e-3)
-trainer.fit(epochs=2000, n_collocation=1000, n_bc=200, n_ic=200)
+trainer = Trainer(model, pde, lr=1e-3, device="cpu")
+loss_history = trainer.fit(epochs=2000, n_collocation=1000)
 
-# Visualize solution
-viz = Visualizer(model, pde)
-viz.plot_solution_1d(time=0.5)
-viz.plot_solution_2d(resolution=100)
+Visualizer.plot_loss(loss_history)
+Visualizer.plot_1d(model, pde, t=0.5)
+Visualizer.plot_2d(model, pde, resolution=100)
 ```
+
+---
+
+## Tips
+
+- Run examples from the repository root to ensure local imports work.
+- Use `set_seed()` from `utils` for reproducible runs.
+- The library is intentionally small and educational — adapt it for production use (better batching, logging, checkpoints).
+
+---
+
+If you'd like, I can:
+
+- Add a `requirements.txt` or `pyproject.toml` with pinned dependencies.
+- Add a runnable demo script that downloads or generates reference data and runs a short training pass.
+- Convert examples back to instance-based Visualizer usage if you prefer that API.
