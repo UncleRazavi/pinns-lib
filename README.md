@@ -75,17 +75,3 @@ Visualizer.plot_2d(model, pde, resolution=100)
 ```
 
 ---
-
-## Tips
-
-- Run examples from the repository root to ensure local imports work.
-- Use `set_seed()` from `utils` for reproducible runs.
-- The library is intentionally small and educational — adapt it for production use (better batching, logging, checkpoints).
-
----
-
-If you'd like, I can:
-
-- Add a `requirements.txt` or `pyproject.toml` with pinned dependencies.
-- Add a runnable demo script that downloads or generates reference data and runs a short training pass.
-- Convert examples back to instance-based Visualizer usage if you prefer that API.
