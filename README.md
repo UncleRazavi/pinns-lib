@@ -166,3 +166,7 @@ $$\[
 - Karniadakis, G. E., et al. (2021). *Physics-informed machine learning*. Nature Reviews Physics, 3, 422–440.
 
 
+## License
+
+This project is licensed under the [MIT License](LICENSE) — see the file for details.
+
