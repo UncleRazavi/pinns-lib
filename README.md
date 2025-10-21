@@ -92,6 +92,34 @@ trainer.pretrain(problem_simple, epochs=200, lr=1e-3, n_collocation=500)
 trainer.fine_tune(epochs=500, lr=1e-4, n_collocation=2000)
 ```
 
+## Adaptive Loss Weighting & Sampling
+
+Two additional enhancements are included:
+
+- Adaptive Loss Weighting: an optional GradNorm-style update that adjusts component weights (PDE / IC / BC / hybrid / reg) during training. Enable by passing `curriculum={'adaptive_weighting': True, ...}` to `Trainer.fit`. The trainer prints the current adaptive weights when verbose.
+
+- Domain Sampling Strategies: built-in samplers in `utils.py`:
+    - `latin_hypercube_sampler(n, domain)` — Latin Hypercube sampling.
+    - `sobol_sampler(n, domain)` — Sobol sequence (falls back to LHS if unavailable).
+    - `adaptive_resample(model, problem, candidate_x, candidate_t, n_new)` — pick new points where PDE residual is largest.
+
+Usage example with custom sampler and adaptive weighting:
+
+```python
+from utils import sobol_sampler
+
+trainer.sampler = lambda n, domain: sobol_sampler(n, domain)
+
+curriculum = {
+        'epochs': 1000,
+        'n_collocation': (500, 2000),
+        'adaptive_weighting': True
+}
+
+loss_history = trainer.fit(epochs=1000, curriculum=curriculum, verbose=100)
+```
+
+
 
 ## Install
 
