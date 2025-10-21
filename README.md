@@ -25,14 +25,12 @@ Key components
 
 ## Training & Optimization Enhancements
 
-This release adds several trainer features to support more advanced workflows:
-
 - Curriculum Learning: progressively increase training difficulty (collocation / BC / IC counts) via a schedule.
 - Physics-Based Regularization: attach problem-specific regularizers (energy conservation, monotonicity penalties) and weight them in the loss.
 - Hybrid Solvers: provide a hook to include additional supervision or preconditioning terms (e.g., coarse finite-difference or FEM solutions).
 - Transfer Learning: helpers to pretrain on simpler PDEs and fine-tune on a target problem.
 
-These features are available through the `Trainer` API. See short examples below.
+These features are available through the `Trainer`. See short examples below.
 
 ### Curriculum learning example
 
@@ -232,4 +230,5 @@ $$\[
 ## License
 
 This project is licensed under the [MIT License](LICENSE) — see the file for details.
+
 
