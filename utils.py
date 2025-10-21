@@ -22,3 +22,22 @@ def load_model(model, path="pinn_model.pth", device="cpu"):
     """Load model weights."""
     model.load_state_dict(torch.load(path, map_location=device))
     return model
+
+
+def linear_schedule(start: int, end: int, frac: float) -> int:
+    """Simple linear schedule for curriculum interpolation.
+
+    Returns integer interpolated value between start and end.
+    """
+    return int(start + (end - start) * frac)
+
+
+def energy_regularizer(model, problem, x_int, t_int):
+    
+    """A small example of a physics-based regularizer.
+    """
+    # compute u^2 integrated over sampled points as a proxy energy
+    inp = torch.cat([x_int, t_int], dim=1)
+    u = model(inp)
+    energy = torch.mean(u ** 2)
+    return energy
