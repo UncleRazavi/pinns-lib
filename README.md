@@ -23,6 +23,69 @@ Key components
 
 ---
 
+## Training & Optimization Enhancements
+
+This release adds several trainer features to support more advanced workflows:
+
+- Curriculum Learning: progressively increase training difficulty (collocation / BC / IC counts) via a schedule.
+- Physics-Based Regularization: attach problem-specific regularizers (energy conservation, monotonicity penalties) and weight them in the loss.
+- Hybrid Solvers: provide a hook to include additional supervision or preconditioning terms (e.g., coarse finite-difference or FEM solutions).
+- Transfer Learning: helpers to pretrain on simpler PDEs and fine-tune on a target problem.
+
+These features are available through the `Trainer` API. See short examples below.
+
+### Curriculum learning example
+
+```python
+from trainer import Trainer
+from utils import linear_schedule
+
+# create model and pde as usual
+trainer = Trainer(model, pde, lr=1e-3, device="cpu")
+
+curriculum = {
+    "epochs": 2000,
+    "n_collocation": (200, 2000),
+    "n_bc": (20, 200),
+    "n_ic": (20, 200),
+    # optional custom schedule: (start,end,frac)->int
+    # "schedule": lambda s,e,frac: int(s + (e-s)*(frac**0.7))
+}
+
+loss_history = trainer.fit(epochs=2000, verbose=100, curriculum=curriculum)
+```
+
+### Physics-based regularizer example
+
+```python
+from utils import energy_regularizer
+
+trainer.physics_reg = energy_regularizer  # signature: (model, problem, x_int, t_int) -> torch scalar
+loss_history = trainer.fit(epochs=1000, physics_reg_weight=1e-3)
+```
+
+### Hybrid solver hook example
+
+```python
+def hybrid_loss(model):
+    # compute supervision from a coarse FD solver or preconditioner
+    return torch.tensor(0.0, device="cpu")
+
+trainer.hybrid_loss = hybrid_loss
+loss_history = trainer.fit(epochs=1000, hybrid_weight=0.1)
+```
+
+### Transfer learning example
+
+```python
+# pretrain on a simpler PDEProblem
+trainer.pretrain(problem_simple, epochs=200, lr=1e-3, n_collocation=500)
+
+# fine-tune on the main problem
+trainer.fine_tune(epochs=500, lr=1e-4, n_collocation=2000)
+```
+
+
 ## Install
 
 Recommended: create a virtual environment and install dependencies from `requirements.txt`.
