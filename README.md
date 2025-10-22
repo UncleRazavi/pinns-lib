@@ -105,7 +105,7 @@ pip install -r requirements.txt
 
 ## Minimal example (Heat equation)
 
-This example matches the small API used in the repository. Run it from the repository root.
+This example matches the structure used in the repository. Run it from the repository root.
 
 ```python
 import torch
