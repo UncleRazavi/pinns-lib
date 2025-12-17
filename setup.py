@@ -1,14 +1,10 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name="pinns-lib",
-    version="0.1.0",
+    version="0.1.1",
     description="Physics-Informed Neural Networks library",
     author="H.R.",
-    packages=find_packages(),
-    install_requires=[
-        "torch",
-        "numpy",
-        "matplotlib"
-    ],
+    py_modules=["PDEproblem", "PINNModel", "trainer", "utils", "visualizer"],
+    install_requires=["torch", "numpy", "matplotlib"],
 )

@@ -1,3 +1,4 @@
+<<<<<<< HEAD:visualizer.py
 import torch
 import matplotlib.pyplot as plt
 import numpy as np
@@ -99,3 +100,71 @@ class Visualizer:
         if self.model is None or self.problem is None:
             raise ValueError("Visualizer requires model and problem for instance plotting")
         return Visualizer.plot_2d(self.model, self.problem, resolution=resolution, device=self.device)
+=======
+import torch
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+class Visualizer:
+    @staticmethod
+    def plot_loss(loss_history, figsize=(6, 4)):
+        plt.figure(figsize=figsize)
+        plt.plot(loss_history)
+        plt.yscale("log")
+        plt.xlabel("Epoch")
+        plt.ylabel("Loss (log scale)")
+        plt.title("Training Loss")
+        plt.grid(alpha=0.3)
+        plt.tight_layout()
+        plt.show()
+
+    @staticmethod
+    def plot_1d(model, problem, t=0.0, resolution=200, device="cpu"):
+        x_min, x_max = problem.domain["x"]
+        x = torch.linspace(x_min, x_max, resolution, device=device).view(-1, 1)
+        t_tensor = torch.full_like(x, float(t))
+        inp = torch.cat([x, t_tensor], dim=1)
+
+        model_was_training = model.training
+        model.eval()
+        with torch.no_grad():
+            u = model(inp).cpu().numpy().squeeze()
+        model.train(model_was_training)
+
+        plt.figure(figsize=(6, 4))
+        plt.plot(x.cpu().numpy(), u, lw=2)
+        plt.xlabel("x")
+        plt.ylabel(f"u(x, t={t})")
+        plt.title(f"Solution at t={t}")
+        plt.grid(alpha=0.3)
+        plt.tight_layout()
+        plt.show()
+
+    @staticmethod
+    def plot_2d(model, problem, resolution=100, device="cpu", cmap="viridis"):
+        x_min, x_max = problem.domain["x"]
+        t_min, t_max = problem.domain["t"]
+
+        x = np.linspace(x_min, x_max, resolution)
+        t = np.linspace(t_min, t_max, resolution)
+        X, T = np.meshgrid(x, t, indexing="xy")
+
+        XT = np.stack([X.ravel(), T.ravel()], axis=1)
+        XT_tensor = torch.tensor(XT, dtype=torch.float32, device=device)
+
+        model_was_training = model.training
+        model.eval()
+        with torch.no_grad():
+            U = model(XT_tensor).cpu().numpy().reshape(resolution, resolution)
+        model.train(model_was_training)
+
+        plt.figure(figsize=(7, 5))
+        plt.pcolormesh(t, x, U.T, shading="auto", cmap=cmap)
+        plt.colorbar(label="u(x,t)")
+        plt.xlabel("t")
+        plt.ylabel("x")
+        plt.title("Solution u(x,t)")
+        plt.tight_layout()
+        plt.show()
+>>>>>>> d0de537 (Optimize PINN core, add examples, improve repo structure):src/pinns_lib/visualizer.py

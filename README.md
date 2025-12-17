@@ -25,21 +25,14 @@ Key components
 
 ## Training & Optimization Enhancements
 
-<<<<<<< HEAD
-=======
 This release adds several trainer features to support more advanced workflows:
 
->>>>>>> dfb05ad (a small enhancement)
 - Curriculum Learning: progressively increase training difficulty (collocation / BC / IC counts) via a schedule.
 - Physics-Based Regularization: attach problem-specific regularizers (energy conservation, monotonicity penalties) and weight them in the loss.
 - Hybrid Solvers: provide a hook to include additional supervision or preconditioning terms (e.g., coarse finite-difference or FEM solutions).
 - Transfer Learning: helpers to pretrain on simpler PDEs and fine-tune on a target problem.
 
-<<<<<<< HEAD
-These features are available through the `Trainer`. See short examples below.
-=======
 These features are available through the `Trainer` API. See short examples below.
->>>>>>> dfb05ad (a small enhancement)
 
 ### Curriculum learning example
 
