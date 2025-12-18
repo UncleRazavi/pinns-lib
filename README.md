@@ -6,7 +6,7 @@
 
   
 
-The goal of this project is to provide a **minimal, readable, and extensible** PINN implementation that is easy to understand, modify, and experiment with—without heavy abstractions or unnecessary dependencies.
+The goal of this project is to provide a **minimal, readable, and extensible** PINN implementation that is easy to understand, modify, and experiment with without heavy abstractions or unnecessary dependencies.
 
   
 
@@ -51,7 +51,7 @@ Defines the PDE, domain, coefficients, and boundary/initial conditions.
 
   
 
-- Supports first- and second-order PDEs
+- Supports first and second-order PDEs
 
 - Handles PDE residual, IC loss, and Dirichlet BC loss
 
@@ -416,4 +416,5 @@ $$[
 ## License
 
 This project is licensed under the [MIT License](LICENSE) — see the file for details.
+
 
